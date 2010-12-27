@@ -15,6 +15,25 @@ set(PocoExtensions_VERSION
 set(CMAKE_DEBUG_POSTFIX d)
 
 #------------------------------------------------------------------------------
+# Find required packages
+
+find_path(POCO_INCLUDE_DIRS
+  NAMES Poco/Foundation.h
+  PATHS /usr/include /usr/local/include
+  )
+include_directories(${POCO_INCLUDE_DIRS})
+
+find_library(POCO_Foundation_LIBRARY
+  NAMES PocoFoundation
+  PATHS /usr/lib /usr/local/lib
+  )
+
+find_library(POCO_Net_LIBRARY
+  NAMES PocoNet
+  PATHS /usr/lib /usr/local/lib
+  )
+
+#------------------------------------------------------------------------------
 # Sources
 
 include_directories(${PROJECT_SOURCE_DIR}/include)
@@ -38,6 +57,7 @@ set(PocoExtensions_SOURCES
 
 add_library(PocoExtensions SHARED ${PocoExtensions_SOURCES})
 set_target_properties(PocoExtensions PROPERTIES SOVERSION ${PocoExtensions_VERSION})
+target_link_libraries(PocoExtensions ${POCO_Foundation_LIBRARY} ${POCO_Net_LIBRARY})
 if(WIN32)
   set_target_properties(PocoExtensions PROPERTIES PREFIX "")
 endif(WIN32)
