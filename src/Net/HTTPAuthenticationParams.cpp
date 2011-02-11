@@ -19,6 +19,12 @@ namespace Net {
 const std::string HTTPAuthenticationParams::REALM = "realm";
 
 
+HTTPAuthenticationParams::HTTPAuthenticationParams() :
+    NameValueCollection()
+{
+}
+
+
 HTTPAuthenticationParams::HTTPAuthenticationParams(const HTTPRequest& request) :
     NameValueCollection()
 {
@@ -112,10 +118,12 @@ std::string HTTPAuthenticationParams::toString() const
 
 // void HTTPAuthenticationParams::splitQop(std::vector<std::string>& options) const
 // {
+//     options.clear();
 //     if (has("qop")) {
 //         const StringTokenizer tokens(get("qop"),
 //                                      ",",
-//                                      StringTokenizer::TOK_IGNORE_EMPTY | StringTokenizer::TOK_TRIM);
+//                                      StringTokenizer::TOK_IGNORE_EMPTY |
+//                                      StringTokenizer::TOK_TRIM);
 // 
 //         options.assign(tokens.begin(), tokens.end());
 //     }

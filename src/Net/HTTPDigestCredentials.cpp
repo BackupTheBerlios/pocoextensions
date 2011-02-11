@@ -17,85 +17,43 @@ namespace Net {
 namespace {
 
 
-std::string clientNonce()
-{
-    MD5Engine engine;
-
-    engine.update(DateTimeFormatter::format(Timestamp(), DateTimeFormat::ISO8601_FORMAT));
-
-    return DigestEngine::digestToHex(engine.digest());
-}
-
-
 std::string quoted(const std::string& s)
 {
-    return '"' + s + '"';
+    std::string result;
+
+    result.reserve(1 + s.size() + 1);
+    result += '"';
+    result += s;
+    result += '"';
+
+    return result;
 }
 
 
-int increaseCounter(std::map<std::string, int>& map, const std::string& nonce)
+std::string digest(DigestEngine& engine,
+                   const std::string& a,
+                   const std::string& b,
+                   const std::string& c = std::string(),
+                   const std::string& d = std::string(),
+                   const std::string& e = std::string(),
+                   const std::string& f = std::string())
 {
-    std::map<std::string, int>::iterator it = map.find(nonce);
-
-    if (it == map.end()) {
-        it = map.insert(std::map<std::string, int>::value_type(nonce, 0)).first;
+    engine.reset();
+    engine.update(a);
+    engine.update(':');
+    engine.update(b);
+    if (!c.empty()) {
+        engine.update(':');
+        engine.update(c);
+        if (!d.empty()) {
+            engine.update(':');
+            engine.update(d);
+            engine.update(':');
+            engine.update(e);
+            engine.update(':');
+            engine.update(f);
+        }
     }
-
-    it->second += 1;
-
-    return it->second;
-}
-
-
-std::string digest(DigestEngine& engine,
-                   const std::string& a,
-                   const std::string& b)
-{
-    engine.reset();
-    engine.update(a);
-    engine.update(':');
-    engine.update(b);
-
-    return DigestEngine::digestToHex(engine.digest());
-}
-
-
-std::string digest(DigestEngine& engine,
-                   const std::string& a,
-                   const std::string& b,
-                   const std::string& c)
-{
-    engine.reset();
-    engine.update(a);
-    engine.update(':');
-    engine.update(b);
-    engine.update(':');
-    engine.update(c);
-
-    return DigestEngine::digestToHex(engine.digest());
-}
-
-
-std::string digest(DigestEngine& engine,
-                   const std::string& a,
-                   const std::string& b,
-                   const std::string& c,
-                   const std::string& d,
-                   const std::string& e,
-                   const std::string& f)
-{
-    engine.reset();
-    engine.update(a);
-    engine.update(':');
-    engine.update(b);
-    engine.update(':');
-    engine.update(c);
-    engine.update(':');
-    engine.update(d);
-    engine.update(':');
-    engine.update(e);
-    engine.update(':');
-    engine.update(f);
 
     return DigestEngine::digestToHex(engine.digest());
 }
@@ -108,7 +66,7 @@ const std::string HTTPDigestCredentials::SCHEME = "Digest";
 
 
 HTTPDigestCredentials::HTTPDigestCredentials():
-    _cnonce(clientNonce())
+    _cnonce(createNonce())
 {
 }
 
@@ -116,7 +74,7 @@ HTTPDigestCredentials::HTTPDigestCredentials():
 HTTPDigestCredentials::HTTPDigestCredentials(const std::string& username, const std::string& password):
     _username(username),
     _password(password),
-    _cnonce(clientNonce())
+    _cnonce(createNonce())
 {
 }
 
@@ -135,12 +93,16 @@ void HTTPDigestCredentials::setPassword(const std::string& password)
 
 void HTTPDigestCredentials::authenticate(HTTPRequest& request, const HTTPResponse& response)
 {
-    HTTPAuthenticationParams responseAuthParams(response);
+    authenticate(request, HTTPAuthenticationParams(response));
+}
 
+
+void HTTPDigestCredentials::authenticate(HTTPRequest& request, const HTTPAuthenticationParams& responseAuthParams)
+{
     if (!responseAuthParams.has("nonce") ||
         !responseAuthParams.has("realm"))
     {
-        throw InvalidArgumentException("Invalid HTTP response");
+        throw InvalidArgumentException("Invalid HTTP authentication parameters");
     }
 
     const std::string& algorithm = responseAuthParams.get("algorithm", "MD5");
@@ -166,29 +128,60 @@ void HTTPDigestCredentials::authenticate(HTTPRequest& request, const HTTPRespons
 
     MD5Engine engine;
 
-    std::string ha1 = digest(engine, _username, realm, _password);
-    std::string ha2 = digest(engine, request.getMethod(), request.getURI());
+    const std::string ha1 = digest(engine, _username, realm, _password);
+    const std::string ha2 = digest(engine, request.getMethod(), request.getURI());
 
     // if (icompare(algorithm, "MD5-sess") == 0) {
     //     ha1 = digest(engine, ha1, nonce, _cnonce);
     // }
 
-    if (!qop.empty()) {
-        if (icompare(qop, "auth") == 0) {
-            const std::string nc = Poco::NumberFormatter::formatHex(increaseCounter(_nc, nonce), 8);
-
-            requestAuthParams.set("nc", nc);
-            requestAuthParams.set("cnonce", _cnonce);
-            requestAuthParams.set("qop", qop);
-            requestAuthParams.set("response", digest(engine, ha1, nonce, nc, _cnonce, qop, ha2));
-        } else {
-            throw NotImplementedException("Unsupported quality of protection", responseAuthParams.get("qop"));
-        }
-    } else {
+    if (qop.empty()) {
         requestAuthParams.set("response", digest(engine, ha1, nonce, ha2));
+    } else if (icompare(qop, "auth") == 0) {
+        const std::string nc = NumberFormatter::formatHex(updateNonceCounter(nonce), 8);
+
+        requestAuthParams.set("nc", nc);
+        requestAuthParams.set("cnonce", _cnonce);
+        requestAuthParams.set("qop", qop);
+        requestAuthParams.set("response", digest(engine, ha1, nonce, nc, _cnonce, qop, ha2));
+    } else if (icompare(qop, "auth-int") == 0) {
+        // TODO
+        throw NotImplementedException("Integrity protection is not implemented");
+    } else {
+        throw InvalidArgumentException("Invalid quality of protection", qop);
     }
 
     request.setCredentials(SCHEME, requestAuthParams.toString());
+}
+
+
+std::string HTTPDigestCredentials::createNonce()
+{
+    static unsigned int counter = 0;
+
+    MD5Engine md5;
+    Timestamp::TimeVal now = Timestamp().epochMicroseconds();
+
+    md5.update(&counter, sizeof(counter));
+    md5.update(&now, sizeof(now));
+
+    ++counter;
+
+    return DigestEngine::digestToHex(md5.digest());
+}
+
+
+int HTTPDigestCredentials::updateNonceCounter(const std::string& nonce)
+{
+    NonceCounterMap::iterator iter = _nc.find(nonce);
+
+    if (iter == _nc.end()) {
+        iter = _nc.insert(NonceCounterMap::value_type(nonce, 0)).first;
+    }
+
+    iter->second += 1;
+
+    return iter->second;
 }
 
 

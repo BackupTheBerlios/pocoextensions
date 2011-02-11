@@ -19,6 +19,7 @@ class DigestEngine;
 namespace Net {
 
 
+class HTTPAuthenticationParams;
 class HTTPRequest;
 class HTTPResponse;
 
@@ -50,16 +51,26 @@ public:
     void authenticate(HTTPRequest& request, const HTTPResponse& response);
 		/// Adds authentication information to the given HTTPRequest.
 
+    void authenticate(HTTPRequest& request, const HTTPAuthenticationParams& responseAuthParams);
+		/// Adds authentication information to the given HTTPRequest.
+
+	static std::string createNonce();
+		/// Creates a random nonce string.
+
 	static const std::string SCHEME;
 
 private:
 	HTTPDigestCredentials(const HTTPDigestCredentials&);
 	HTTPDigestCredentials& operator = (const HTTPDigestCredentials);
 
+    int updateNonceCounter(const std::string& nonce);
+
+    typedef std::map<std::string, int> NonceCounterMap;
+
     std::string _username;
     std::string _password;
     std::string _cnonce;
-    std::map<std::string, int> _nc;
+    NonceCounterMap _nc;
 };
 
 

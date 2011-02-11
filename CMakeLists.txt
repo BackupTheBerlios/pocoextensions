@@ -7,8 +7,8 @@ cmake_minimum_required(VERSION 2.6)
 project(PocoExtensions)
 
 set(PocoExtensions_MAJOR_VERSION 0)
-set(PocoExtensions_MINOR_VERSION 4)
-set(PocoExtensions_PATCH_VERSION 2)
+set(PocoExtensions_MINOR_VERSION 5)
+set(PocoExtensions_PATCH_VERSION 1)
 set(PocoExtensions_VERSION
   "${PocoExtensions_MAJOR_VERSION}.${PocoExtensions_MINOR_VERSION}.${PocoExtensions_PATCH_VERSION}")
 
@@ -55,7 +55,7 @@ set(PocoExtensions_SOURCES
 #------------------------------------------------------------------------------
 # Targets
 
-add_library(PocoExtensions SHARED ${PocoExtensions_SOURCES})
+add_library(PocoExtensions STATIC ${PocoExtensions_SOURCES})
 set_target_properties(PocoExtensions PROPERTIES SOVERSION ${PocoExtensions_VERSION})
 target_link_libraries(PocoExtensions ${POCO_Foundation_LIBRARY} ${POCO_Net_LIBRARY})
 if(WIN32)
