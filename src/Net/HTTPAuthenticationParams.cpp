@@ -25,6 +25,13 @@ HTTPAuthenticationParams::HTTPAuthenticationParams() :
 }
 
 
+HTTPAuthenticationParams::HTTPAuthenticationParams(const std::string& authInfo) :
+    NameValueCollection()
+{
+    fromAuthInfo(authInfo);
+}
+
+
 HTTPAuthenticationParams::HTTPAuthenticationParams(const HTTPRequest& request) :
     NameValueCollection()
 {

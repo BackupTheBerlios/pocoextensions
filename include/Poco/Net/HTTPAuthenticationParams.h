@@ -23,6 +23,9 @@ public:
     HTTPAuthenticationParams();
 		/// TODO
 
+    explicit HTTPAuthenticationParams(const std::string& authInfo);
+		/// TODO
+
     explicit HTTPAuthenticationParams(const HTTPRequest& request);
 		/// TODO
 
