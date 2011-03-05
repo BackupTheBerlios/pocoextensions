@@ -78,9 +78,9 @@ void HTTPAuthenticationParams::fromResponse(const HTTPResponse& response)
 
     const std::string& header = response.get("WWW-Authenticate");
 
-    if (icompare(header, 6, "Basic ") == 0) {
+    if (icompare(header, 0, 6, "Basic ") == 0) {
         parse(header.begin() + 6, header.end());
-    } else if (icompare(header, 7, "Digest ") == 0) {
+    } else if (icompare(header, 0, 7, "Digest ") == 0) {
         parse(header.begin() + 7, header.end());
     } else {
         throw InvalidArgumentException("Invalid authentication scheme", header);
@@ -241,7 +241,7 @@ void HTTPAuthenticationParams::parse(std::string::const_iterator begin,
         STATE_COMMA = STATE_FINAL | 6
     };
 
-    int         state = STATE_TOKEN;
+    int         state = STATE_SPACE;
     std::string token;
     std::string value;
 
