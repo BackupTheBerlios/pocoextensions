@@ -20,7 +20,7 @@ hasAuthenticateHeader(const HTTPResponse& response)
 void
 getAuthenticateHeader(const HTTPResponse& response, std::string& scheme, std::string& authInfo)
 {
-    if (!response.has("WWW-Authenticate")) {
+    if (!hasAuthenticateHeader(response)) {
         throw NotAuthenticatedException("HTTP response has no authentication header");
     }
 
