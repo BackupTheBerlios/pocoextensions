@@ -4,10 +4,35 @@
 #include "Poco/Net/HTTPResponse.h"
 #include "Poco/Net/NetException.h"
 #include "Poco/Net/Utility.h"
+#include "Poco/URI.h"
 
 
 namespace Poco {
 namespace Net {
+
+
+void
+extractCredentials(const std::string& userInfo, std::string& username, std::string& password)
+{
+    const size_t p = userInfo.find(':');
+
+    if (p != std::string::npos) {
+        username.assign(userInfo, 0, p);
+        password.assign(userInfo, p + 1, std::string::npos);
+    } else {
+        username.assign(userInfo);
+        password.clear();
+    }
+}
+
+
+void
+extractCredentials(const Poco::URI& uri, std::string& username, std::string& password)
+{
+    if (!uri.getUserInfo().empty()) {
+        extractCredentials(uri.getUserInfo(), username, password);
+    }
+}
 
 
 bool

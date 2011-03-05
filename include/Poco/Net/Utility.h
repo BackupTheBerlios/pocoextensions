@@ -8,10 +8,23 @@
 
 
 namespace Poco {
+
+
+class URI;
+
+
 namespace Net {
 
 
 class HTTPResponse;
+
+
+void
+extractCredentials(const std::string& userInfo, std::string& username, std::string& password);
+
+
+void
+extractCredentials(const Poco::URI& uri, std::string& username, std::string& password);
 
 
 bool
