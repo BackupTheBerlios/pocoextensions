@@ -12,7 +12,9 @@ set(PocoExtensions_PATCH_VERSION 1)
 set(PocoExtensions_VERSION
   "${PocoExtensions_MAJOR_VERSION}.${PocoExtensions_MINOR_VERSION}.${PocoExtensions_PATCH_VERSION}")
 
-set(CMAKE_DEBUG_POSTFIX d)
+if(WIN32)
+  set(CMAKE_DEBUG_POSTFIX d)
+endif(WIN32)
 
 #------------------------------------------------------------------------------
 # Find required packages
