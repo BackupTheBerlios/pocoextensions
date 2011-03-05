@@ -38,6 +38,7 @@ public:
     void authenticate(HTTPRequest& request, const HTTPResponse& response);
 
 protected:
+    // HTTPBasicCredentials _basic;
     HTTPDigestCredentials _digest;
 };
 
