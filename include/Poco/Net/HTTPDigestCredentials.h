@@ -85,8 +85,8 @@ private:
 
     typedef std::map<std::string, int> NonceCounterMap;
 
-    std::string _password;
     std::string _username;
+    std::string _password;
     HTTPAuthenticationParams _requestAuthParams;
     NonceCounterMap _nc;
 };
