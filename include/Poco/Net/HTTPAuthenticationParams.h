@@ -40,8 +40,8 @@ public:
     explicit HTTPAuthenticationParams(const HTTPResponse& response);
 		/// TODO
 
-    ~HTTPAuthenticationParams();
-		/// TODO
+    virtual ~HTTPAuthenticationParams();
+		/// Destroys the HTTPAuthenticationParams.
 
     void fromAuthInfo(const std::string& authInfo);
 		/// TODO
