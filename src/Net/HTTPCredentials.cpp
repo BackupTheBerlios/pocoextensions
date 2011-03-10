@@ -35,12 +35,22 @@ HTTPCredentials::authenticate(HTTPRequest& request, const HTTPResponse& response
          iter != response.end();
          ++iter)
     {
-        if (icompare(iter->second, 6, "Basic ") == 0) {
+        if (isBasicCredentials(iter->second)) {
             HTTPBasicCredentials(_digest.getUsername(), _digest.getPassword()).authenticate(request);
             return;
-        } else if (icompare(iter->second, 7, "Digest ") == 0) {
+        } else if (isDigestCredentials(iter->second)) {
             _digest.authenticate(request, HTTPAuthenticationParams(iter->second.substr(7)));
             return;
+        }
+    }
+}
+
+
+void HTTPCredentials::updateAuthInfo(HTTPRequest& request)
+{
+    if (request.has("Authorization")) {
+        if (isDigestCredentials(request.get("Authorization"))) {
+            _digest.updateAuthInfo(request);
         }
     }
 }

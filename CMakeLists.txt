@@ -7,7 +7,7 @@ cmake_minimum_required(VERSION 2.6)
 project(PocoExtensions)
 
 set(PocoExtensions_MAJOR_VERSION 1)
-set(PocoExtensions_MINOR_VERSION 0)
+set(PocoExtensions_MINOR_VERSION 1)
 set(PocoExtensions_PATCH_VERSION 0)
 set(PocoExtensions_VERSION
   "${PocoExtensions_MAJOR_VERSION}.${PocoExtensions_MINOR_VERSION}.${PocoExtensions_PATCH_VERSION}")

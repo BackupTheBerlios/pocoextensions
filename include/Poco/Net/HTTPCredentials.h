@@ -36,6 +36,10 @@ public:
 		/// Returns the password.
 
     void authenticate(HTTPRequest& request, const HTTPResponse& response);
+        /// TODO
+
+    void updateAuthInfo(HTTPRequest& request);
+        /// TODO
 
 protected:
     // HTTPBasicCredentials _basic;
