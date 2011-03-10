@@ -5,7 +5,6 @@
 #include "Poco/DateTimeFormatter.h"
 #include "Poco/Exception.h"
 #include "Poco/MD5Engine.h"
-#include "Poco/Net/HTTPAuthenticationParams.h"
 #include "Poco/Net/HTTPDigestCredentials.h"
 #include "Poco/Net/HTTPRequest.h"
 #include "Poco/Net/HTTPResponse.h"
@@ -17,17 +16,8 @@ namespace Net {
 namespace {
 
 
-std::string quoted(const std::string& s)
-{
-    std::string result;
-
-    result.reserve(1 + s.size() + 1);
-    result += '"';
-    result += s;
-    result += '"';
-
-    return result;
-}
+const std::string defaultAlgorithm = "MD5";
+const std::string defaultQop       = "";
 
 
 std::string digest(DigestEngine& engine,
@@ -65,16 +55,14 @@ std::string digest(DigestEngine& engine,
 const std::string HTTPDigestCredentials::SCHEME = "Digest";
 
 
-HTTPDigestCredentials::HTTPDigestCredentials():
-    _cnonce(createNonce())
+HTTPDigestCredentials::HTTPDigestCredentials()
 {
 }
 
 	
 HTTPDigestCredentials::HTTPDigestCredentials(const std::string& username, const std::string& password):
     _username(username),
-    _password(password),
-    _cnonce(createNonce())
+    _password(password)
 {
 }
 
@@ -99,59 +87,15 @@ void HTTPDigestCredentials::authenticate(HTTPRequest& request, const HTTPRespons
 
 void HTTPDigestCredentials::authenticate(HTTPRequest& request, const HTTPAuthenticationParams& responseAuthParams)
 {
-    if (!responseAuthParams.has("nonce") ||
-        !responseAuthParams.has("realm"))
-    {
-        throw InvalidArgumentException("Invalid HTTP authentication parameters");
-    }
+    createAuthParams(request, responseAuthParams);
+    request.setCredentials(SCHEME, _requestAuthParams.toString());
+}
 
-    const std::string& algorithm = responseAuthParams.get("algorithm", "MD5");
 
-    if (icompare(algorithm, "MD5") != 0) {
-        throw NotImplementedException("Unsupported digest algorithm", algorithm);
-    }
-
-    const std::string& nonce = responseAuthParams.get("nonce");
-    const std::string& opaque = responseAuthParams.get("opaque", "");
-    const std::string& qop = responseAuthParams.get("qop", "");
-    const std::string& realm = responseAuthParams.getRealm();
-
-    HTTPAuthenticationParams requestAuthParams;
-
-    requestAuthParams.set("username", quoted(_username));
-    requestAuthParams.set("uri", request.getURI());
-    requestAuthParams.set("nonce", nonce);
-    requestAuthParams.setRealm(quoted(realm));
-    if (!opaque.empty()) {
-        requestAuthParams.set("opaque", opaque);
-    }
-
-    MD5Engine engine;
-
-    const std::string ha1 = digest(engine, _username, realm, _password);
-    const std::string ha2 = digest(engine, request.getMethod(), request.getURI());
-
-    // if (icompare(algorithm, "MD5-sess") == 0) {
-    //     ha1 = digest(engine, ha1, nonce, _cnonce);
-    // }
-
-    if (qop.empty()) {
-        requestAuthParams.set("response", digest(engine, ha1, nonce, ha2));
-    } else if (icompare(qop, "auth") == 0) {
-        const std::string nc = NumberFormatter::formatHex(updateNonceCounter(nonce), 8);
-
-        requestAuthParams.set("nc", nc);
-        requestAuthParams.set("cnonce", _cnonce);
-        requestAuthParams.set("qop", qop);
-        requestAuthParams.set("response", digest(engine, ha1, nonce, nc, _cnonce, qop, ha2));
-    } else if (icompare(qop, "auth-int") == 0) {
-        // TODO
-        throw NotImplementedException("Integrity protection is not implemented");
-    } else {
-        throw InvalidArgumentException("Invalid quality of protection", qop);
-    }
-
-    request.setCredentials(SCHEME, requestAuthParams.toString());
+void HTTPDigestCredentials::updateAuthInfo(HTTPRequest& request)
+{
+    updateAuthParams(request);
+    request.setCredentials(SCHEME, _requestAuthParams.toString());
 }
 
 
@@ -171,6 +115,82 @@ std::string HTTPDigestCredentials::createNonce()
 }
 
 
+void HTTPDigestCredentials::createAuthParams(const HTTPRequest& request,
+                                             const HTTPAuthenticationParams& responseAuthParams)
+{
+    // TODO: “domain” auth parameter.
+    // TODO: Integrity protection.
+
+    if (!responseAuthParams.has("nonce") ||
+        !responseAuthParams.has("realm"))
+    {
+        throw InvalidArgumentException("Invalid HTTP authentication parameters");
+    }
+
+    const std::string& algorithm = responseAuthParams.get("algorithm", defaultAlgorithm);
+
+    if (icompare(algorithm, "MD5") != 0) {
+        throw NotImplementedException("Unsupported digest algorithm", algorithm);
+    }
+
+    const std::string& nonce = responseAuthParams.get("nonce");
+    const std::string& qop = responseAuthParams.get("qop", defaultQop);
+    const std::string& realm = responseAuthParams.getRealm();
+
+    _requestAuthParams.clear();
+    _requestAuthParams.set("username", _username);
+    _requestAuthParams.set("uri", request.getURI());
+    _requestAuthParams.set("nonce", nonce);
+    _requestAuthParams.setRealm(realm);
+    if (responseAuthParams.has("opaque")) {
+        _requestAuthParams.set("opaque", responseAuthParams.get("opaque"));
+    }
+
+    // if (icompare(algorithm, "MD5-sess") == 0) {
+    //     ha1 = digest(engine, ha1, nonce, cnonce);
+    // }
+
+    if (qop.empty()) {
+        MD5Engine engine;
+
+        const std::string ha1 = digest(engine, _username, realm, _password);
+        const std::string ha2 = digest(engine, request.getMethod(), request.getURI());
+
+        _requestAuthParams.set("response", digest(engine, ha1, nonce, ha2));
+    } else if (icompare(qop, "auth") == 0) {
+        _requestAuthParams.set("cnonce", createNonce());
+        _requestAuthParams.set("qop", qop);
+        updateAuthParams(request);
+    } else if (icompare(qop, "auth-int") == 0) {
+        // TODO
+        throw NotImplementedException("Integrity protection is not implemented");
+    } else {
+        throw InvalidArgumentException("Invalid quality of protection", qop);
+    }
+}
+
+
+void HTTPDigestCredentials::updateAuthParams(const HTTPRequest& request)
+{
+    const std::string& qop = _requestAuthParams.get("qop", defaultQop);
+
+    if (icompare(qop, "auth") == 0) {
+        MD5Engine engine;
+
+        const std::string& nonce = _requestAuthParams.get("nonce");
+        const std::string& realm = _requestAuthParams.getRealm();
+        const std::string& cnonce = _requestAuthParams.get("cnonce");
+
+        const std::string ha1 = digest(engine, _username, realm, _password);
+        const std::string ha2 = digest(engine, request.getMethod(), request.getURI());
+        const std::string nc = formatNonceCounter(updateNonceCounter(nonce));
+
+        _requestAuthParams.set("nc", nc);
+        _requestAuthParams.set("response", digest(engine, ha1, nonce, nc, cnonce, qop, ha2));
+    }
+}
+
+
 int HTTPDigestCredentials::updateNonceCounter(const std::string& nonce)
 {
     NonceCounterMap::iterator iter = _nc.find(nonce);
@@ -182,6 +202,12 @@ int HTTPDigestCredentials::updateNonceCounter(const std::string& nonce)
     iter->second += 1;
 
     return iter->second;
+}
+
+
+std::string HTTPDigestCredentials::formatNonceCounter(int counter)
+{
+    return NumberFormatter::formatHex(counter, 8);
 }
 
 

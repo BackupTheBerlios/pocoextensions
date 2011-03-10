@@ -7,6 +7,7 @@
 #include <map>
 
 
+#include "Poco/Net/HTTPAuthenticationParams.h"
 #include "Poco/Net/Net.h"
 
 
@@ -19,7 +20,6 @@ class DigestEngine;
 namespace Net {
 
 
-class HTTPAuthenticationParams;
 class HTTPRequest;
 class HTTPResponse;
 
@@ -47,12 +47,15 @@ public:
 
 	const std::string& getPassword() const;
 		/// Returns the password.
-		
+
     void authenticate(HTTPRequest& request, const HTTPResponse& response);
 		/// Adds authentication information to the given HTTPRequest.
 
     void authenticate(HTTPRequest& request, const HTTPAuthenticationParams& responseAuthParams);
 		/// Adds authentication information to the given HTTPRequest.
+
+    void updateAuthInfo(HTTPRequest& request);
+		/// TODO
 
 	static std::string createNonce();
 		/// Creates a random nonce string.
@@ -63,13 +66,20 @@ private:
 	HTTPDigestCredentials(const HTTPDigestCredentials&);
 	HTTPDigestCredentials& operator = (const HTTPDigestCredentials);
 
+    void createAuthParams(const HTTPRequest& request,
+                          const HTTPAuthenticationParams& responseAuthParams);
+
+    void updateAuthParams(const HTTPRequest& request);
+
     int updateNonceCounter(const std::string& nonce);
+
+    static std::string formatNonceCounter(int counter);
 
     typedef std::map<std::string, int> NonceCounterMap;
 
-    std::string _username;
     std::string _password;
-    std::string _cnonce;
+    std::string _username;
+    HTTPAuthenticationParams _requestAuthParams;
     NonceCounterMap _nc;
 };
 
