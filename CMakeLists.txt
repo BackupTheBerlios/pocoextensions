@@ -77,7 +77,6 @@ set(PocoExtensions_HEADERS
   include/Poco/Net/HTTPAuthenticationParams.h
   include/Poco/Net/HTTPCredentials.h
   include/Poco/Net/HTTPDigestCredentials.h
-  include/Poco/Net/Utility.h
   )
 
 set(PocoExtensions_SOURCES
