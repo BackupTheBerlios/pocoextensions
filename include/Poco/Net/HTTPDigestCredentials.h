@@ -19,11 +19,6 @@
 
 
 namespace Poco {
-
-
-class DigestEngine;
-
-
 namespace Net {
 
 
@@ -32,43 +27,52 @@ class HTTPResponse;
 
 
 class HTTPDigestCredentials
-	/// This is a utility class for working with
-	/// HTTP Digest Authentication in HTTPRequest
-	/// objects.
+    /// This is a utility class for working with
+    /// HTTP Digest Authentication in HTTPRequest
+    /// objects.
 {
 public:
-	HTTPDigestCredentials();
-		/// Creates an empty HTTPDigestCredentials object.
+    HTTPDigestCredentials();
+        /// Creates an empty HTTPDigestCredentials object.
 
-	HTTPDigestCredentials(const std::string& username, const std::string& password);
-		/// Creates a HTTPDigestCredentials object with the given username and password.
+    HTTPDigestCredentials(const std::string& username, const std::string& password);
+        /// Creates a HTTPDigestCredentials object with the given username and password.
 
     ~HTTPDigestCredentials();
-        /// TODO
+        /// Destroys the HTTPDigestCredentials.
 
-	void setUsername(const std::string& username);
-		/// Sets the username.
+    void setUsername(const std::string& username);
+        /// Sets the username.
 
-	const std::string& getUsername() const;
-		/// Returns the username.
+    const std::string& getUsername() const;
+        /// Returns the username.
 
-	void setPassword(const std::string& password);
-		/// Sets the password.
+    void setPassword(const std::string& password);
+        /// Sets the password.
 
-	const std::string& getPassword() const;
-		/// Returns the password.
+    const std::string& getPassword() const;
+        /// Returns the password.
 
     void authenticate(HTTPRequest& request, const HTTPResponse& response);
-		/// Adds authentication information to the given HTTPRequest.
+        /// Parses authentication header of the HTTPResponse, initializes
+        /// internal state, and adds authentication information to the given HTTPRequest.
 
     void authenticate(HTTPRequest& request, const HTTPAuthenticationParams& responseAuthParams);
-		/// Adds authentication information to the given HTTPRequest.
+        /// Initializes internal state according to information from the
+        /// HTTPAuthenticationParams of the response, and adds authentication
+        /// information to the given HTTPRequest.
+        ///
+        /// Throws InvalidArgumentException if HTTPAuthenticationParams is
+        /// invalid or some required parameter is missing.
+        /// Throws NotImplementedException in case of unsupported digest
+        /// algorithm or quality of protection method.
 
     void updateAuthInfo(HTTPRequest& request);
-		/// TODO
+        /// Updates internal state and adds authentication information to
+        /// the given HTTPRequest.
 
-	static std::string createNonce();
-		/// Creates a random nonce string.
+    static std::string createNonce();
+        /// Creates a random nonce string.
 
 	static const std::string SCHEME;
 
