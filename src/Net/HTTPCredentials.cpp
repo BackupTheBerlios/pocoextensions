@@ -14,10 +14,8 @@
 #include "Poco/Net/HTTPRequest.h"
 #include "Poco/Net/HTTPResponse.h"
 #include "Poco/Net/NetException.h"
+#include "Poco/Net/Utility.h"
 #include "Poco/String.h"
-
-
-#include "Utility.h"
 
 
 using Poco::icompare;
