@@ -25,7 +25,8 @@ namespace Poco {
 namespace Net {
 
 
-HTTPCredentials::HTTPCredentials()
+HTTPCredentials::HTTPCredentials():
+    _digest()
 {
 }
 
