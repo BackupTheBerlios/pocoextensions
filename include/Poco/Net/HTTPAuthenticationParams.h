@@ -85,10 +85,6 @@ public:
     static const std::string REALM;
 
 private:
-    static void formatItem(std::string& result, ConstIterator itemIter);
-
-    static bool mustBeQuoted(const std::string& param);
-
     void parse(std::string::const_iterator first, std::string::const_iterator last);
 };
 

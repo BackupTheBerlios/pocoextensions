@@ -22,6 +22,39 @@ using Poco::icompare;
 
 namespace Poco {
 namespace Net {
+namespace {
+
+
+bool mustBeQuoted(const std::string& name)
+{
+    return
+        icompare(name, "cnonce") == 0 ||
+        icompare(name, "domain") == 0 ||
+        icompare(name, "nonce") == 0 ||
+        icompare(name, "opaque") == 0 ||
+        icompare(name, "qop") == 0 ||
+        icompare(name, "realm") == 0 ||
+        icompare(name, "response") == 0 ||
+        icompare(name, "uri") == 0 ||
+        icompare(name, "username") == 0;
+}
+
+
+void formatParameter(std::string& result, const std::string& name, const std::string& value)
+{
+    result += name;
+    result += '=';
+    if (mustBeQuoted(name)) {
+        result += '"';
+        result += value;
+        result += '"';
+    } else {
+        result += value;
+    }
+}
+
+
+} // namespace
 
 
 const std::string HTTPAuthenticationParams::REALM = "realm";
@@ -122,13 +155,13 @@ std::string HTTPAuthenticationParams::toString() const
     std::string result;
 
     if (iter != end()) {
-        formatItem(result, iter);
+        formatParameter(result, iter->first, iter->second);
         ++iter;
     }
 
     for (; iter != end(); ++iter) {
         result.append(", ");
-        formatItem(result, iter);
+        formatParameter(result, iter->first, iter->second);
     }
 
     return result;
@@ -237,35 +270,6 @@ void HTTPAuthenticationParams::parse(std::string::const_iterator first, std::str
     if (!(state & STATE_FINAL)) {
         throw SyntaxException("Invalid authentication information");
     }
-}
-
-
-void HTTPAuthenticationParams::formatItem(std::string& result, ConstIterator itemIter)
-{
-    result += itemIter->first;
-    result += '=';
-    if (mustBeQuoted(itemIter->first)) {
-        result += '"';
-        result += itemIter->second;
-        result += '"';
-    } else {
-        result += itemIter->second;
-    }
-}
-
-
-bool HTTPAuthenticationParams::mustBeQuoted(const std::string& param)
-{
-    return
-        icompare(param, "cnonce") == 0 ||
-        icompare(param, "domain") == 0 ||
-        icompare(param, "nonce") == 0 ||
-        icompare(param, "opaque") == 0 ||
-        icompare(param, "qop") == 0 ||
-        icompare(param, "realm") == 0 ||
-        icompare(param, "response") == 0 ||
-        icompare(param, "uri") == 0 ||
-        icompare(param, "username") == 0;
 }
 
 
