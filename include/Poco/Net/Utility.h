@@ -19,20 +19,20 @@ namespace Net {
 class HTTPResponse;
 
 
+bool
+isBasicCredentials(const std::string& header);
+
+
+bool
+isDigestCredentials(const std::string& header);
+
+
 void
 extractCredentials(const std::string& userInfo, std::string& username, std::string& password);
 
 
 void
 extractCredentials(const Poco::URI& uri, std::string& username, std::string& password);
-
-
-bool
-hasAuthenticateHeader(const HTTPResponse& response);
-
-
-void
-getAuthenticateHeader(const HTTPResponse& response, std::string& scheme, std::string& authInfo);
 
 
 } } // namespace Poco::Net

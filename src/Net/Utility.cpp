@@ -11,6 +11,20 @@ namespace Poco {
 namespace Net {
 
 
+bool
+isBasicCredentials(const std::string& header)
+{
+    return icompare(header, 0, 6, "Basic ") == 0;
+}
+
+
+bool
+isDigestCredentials(const std::string& header)
+{
+    return icompare(header, 0, 7, "Digest ") == 0;
+}
+
+
 void
 extractCredentials(const std::string& userInfo, std::string& username, std::string& password)
 {
@@ -31,34 +45,6 @@ extractCredentials(const Poco::URI& uri, std::string& username, std::string& pas
 {
     if (!uri.getUserInfo().empty()) {
         extractCredentials(uri.getUserInfo(), username, password);
-    }
-}
-
-
-bool
-hasAuthenticateHeader(const HTTPResponse& response)
-{
-    return response.has("WWW-Authenticate");
-}
-
-
-void
-getAuthenticateHeader(const HTTPResponse& response, std::string& scheme, std::string& authInfo)
-{
-    if (!hasAuthenticateHeader(response)) {
-        throw NotAuthenticatedException("HTTP response has no authentication header");
-    }
-
-    const std::string& header = response.get("WWW-Authenticate");
-
-    if (icompare(header, 6, "Basic ") == 0) {
-        scheme.assign(header.begin(), header.begin() + 5);
-        authInfo.assign(header.begin() + 6, header.end());
-    } else if (icompare(header, 7, "Digest ") == 0) {
-        scheme.assign(header.begin(), header.begin() + 6);
-        authInfo.assign(header.begin() + 7, header.end());
-    } else {
-        throw InvalidArgumentException("Invalid authentication scheme", header);
     }
 }
 
