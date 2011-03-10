@@ -25,20 +25,21 @@ class HTTPResponse;
 
 
 class HTTPAuthenticationParams : public NameValueCollection
-	/// TODO
+    /// Collection of name-value pairs of HTTP authentication header (i.e.
+    /// "realm", "qop", "nonce" in case of digest authentication header).
 {
 public:
     HTTPAuthenticationParams();
-		/// TODO
+		/// Creates an empty authentication parameters collection.
 
     explicit HTTPAuthenticationParams(const std::string& authInfo);
-		/// TODO
+        /// See fromAuthInfo() documentation.
 
     explicit HTTPAuthenticationParams(const HTTPRequest& request);
-		/// TODO
+        /// See fromRequest() documentation.
 
     explicit HTTPAuthenticationParams(const HTTPResponse& response);
-		/// TODO
+        /// See fromResponse() documentation.
 
     virtual ~HTTPAuthenticationParams();
 		/// Destroys the HTTPAuthenticationParams.
@@ -47,22 +48,39 @@ public:
 		/// Assigns the content of another HTTPAuthenticationParams.
 
     void fromAuthInfo(const std::string& authInfo);
-		/// TODO
+		/// Creates an HTTPAuthenticationParams by parsing authentication
+        /// information.
 
     void fromRequest(const HTTPRequest& request);
-		/// TODO
+		/// Extracts authentication information from the request and creates
+        /// HTTPAuthenticationParams by parsing it.
+        ///
+        /// Throws a NotAuthenticatedException if no authentication
+        /// information is contained in request.
+        /// Throws a InvalidArgumentException if authentication scheme is
+        /// unknown or invalid.
 
     void fromResponse(const HTTPResponse& response);
-		/// TODO
+		/// Extracts authentication information from the response and creates
+        /// HTTPAuthenticationParams by parsing it.
+        ///
+        /// Throws a NotAuthenticatedException if no authentication
+        /// information is contained in response.
+        /// Throws a InvalidArgumentException if authentication scheme is
+        /// unknown or invalid.
 
     void setRealm(const std::string& realm);
-		/// TODO
+		/// Sets the "realm" parameter to the provided string.
 
     const std::string& getRealm() const;
-		/// TODO
+        /// Returns value of the "realm" parameter.
+        ///
+        /// Throws NotFoundException is there is no "realm" set in the
+        /// HTTPAuthenticationParams.
 
     std::string toString() const;
-        /// TODO
+        /// Formats the HTTPAuthenticationParams for inclusion in HTTP
+        /// request or response authentication header.
 
     static const std::string REALM;
 
