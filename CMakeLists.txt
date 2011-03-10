@@ -107,10 +107,11 @@ install(TARGETS PocoExtensions DESTINATION lib)
 
 include(InstallRequiredSystemLibraries)
 
-set(CPACK_PACKAGE_CONTACT "Anton Yabchinskiy <arn@users.berlios.de>")
+set(CPACK_PACKAGE_CONTACT "Anton V. Yabchinskiy <arn@users.berlios.de>")
 set(CPACK_PACKAGE_DESCRIPTION_SUMMARY "Extensions to the POCO C++ library")
 set(CPACK_PACKAGE_VERSION_MAJOR ${PocoExtensions_MAJOR_VERSION})
 set(CPACK_PACKAGE_VERSION_MINOR ${PocoExtensions_MINOR_VERSION})
 set(CPACK_PACKAGE_VERSION_PATCH ${PocoExtensions_PATCH_VERSION})
+set(CPACK_RESOURCE_FILE_LICENSE ${PROJECT_SOURCE_DIR}/LICENSE_1_0.txt)
 
 include(CPack)
