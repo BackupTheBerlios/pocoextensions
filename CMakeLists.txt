@@ -99,7 +99,7 @@ endif(WIN32)
 #------------------------------------------------------------------------------
 # Installation
 
-install(FILES ${PocoExtensions_HEADERS} DESTINATION include)
+install(FILES ${PocoExtensions_HEADERS} DESTINATION include/Poco/Net)
 install(TARGETS PocoExtensions DESTINATION lib)
 
 #------------------------------------------------------------------------------
