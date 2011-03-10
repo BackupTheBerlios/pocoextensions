@@ -52,7 +52,7 @@ public:
         /// TODO
 
 private:
-    HTTPCredentials();
+    HTTPCredentials(const HTTPCredentials&);
     HTTPCredentials& operator = (const HTTPCredentials&);
 
     // HTTPBasicCredentials _basic;

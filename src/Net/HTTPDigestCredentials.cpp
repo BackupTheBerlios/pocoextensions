@@ -81,6 +81,11 @@ HTTPDigestCredentials::HTTPDigestCredentials(const std::string& username, const 
 }
 
 
+HTTPDigestCredentials::~HTTPDigestCredentials()
+{
+}
+
+
 void HTTPDigestCredentials::setUsername(const std::string& username)
 {
     _username = username;

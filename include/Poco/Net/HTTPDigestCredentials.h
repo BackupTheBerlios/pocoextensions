@@ -43,6 +43,9 @@ public:
 	HTTPDigestCredentials(const std::string& username, const std::string& password);
 		/// Creates a HTTPDigestCredentials object with the given username and password.
 
+    ~HTTPDigestCredentials();
+        /// TODO
+
 	void setUsername(const std::string& username);
 		/// Sets the username.
 
