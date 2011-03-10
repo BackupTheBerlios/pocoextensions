@@ -68,7 +68,7 @@ private:
 
     static bool mustBeQuoted(const std::string& param);
 
-    void parse(std::string::const_iterator begin, std::string::const_iterator end);
+    void parse(std::string::const_iterator first, std::string::const_iterator last);
 };
 
 

@@ -127,7 +127,7 @@ std::string HTTPAuthenticationParams::toString() const
 }
 
 
-void HTTPAuthenticationParams::parse(std::string::const_iterator begin, std::string::const_iterator end)
+void HTTPAuthenticationParams::parse(std::string::const_iterator first, std::string::const_iterator last)
 {
     enum State {
         STATE_INITIAL = 0x0100,
@@ -146,7 +146,7 @@ void HTTPAuthenticationParams::parse(std::string::const_iterator begin, std::str
     std::string token;
     std::string value;
 
-    for (std::string::const_iterator it = begin; it != end; ++it) {
+    for (std::string::const_iterator it = first; it != last; ++it) {
         switch (state) {
         case STATE_SPACE :
             if (std::isalnum(*it)) {
