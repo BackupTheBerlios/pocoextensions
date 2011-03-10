@@ -1,3 +1,12 @@
+//
+// test.cpp
+//
+// Copyright (c) 2011 Anton V. Yabchinskiy (arn at users dot berlios dot de)
+//
+// Distributed under the Boost Software License, Version 1.0. (See accompanying
+// file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
+//
+
 
 #include <iostream>
 
@@ -12,11 +21,13 @@
 
 namespace {
 
+
 bool
 isUnathorized(const Poco::Net::HTTPResponse& response)
 {
     return response.getStatus() == Poco::Net::HTTPResponse::HTTP_UNAUTHORIZED;
 }
+
 
 void
 performRequest(Poco::Net::HTTPClientSession& session,
@@ -36,7 +47,9 @@ performRequest(Poco::Net::HTTPClientSession& session,
     ++n;
 }
 
+
 }// namespace
+
 
 int
 main(int argc, char** argv)
