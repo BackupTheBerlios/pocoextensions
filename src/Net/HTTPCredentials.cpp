@@ -39,6 +39,11 @@ HTTPCredentials::HTTPCredentials(const std::string& username, const std::string&
 }
 
 
+HTTPCredentials::~HTTPCredentials()
+{
+}
+
+
 void
 HTTPCredentials::authenticate(HTTPRequest& request, const HTTPResponse& response)
 {

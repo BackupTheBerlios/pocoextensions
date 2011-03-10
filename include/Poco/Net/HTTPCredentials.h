@@ -31,6 +31,8 @@ public:
     explicit
     HTTPCredentials(const std::string& username, const std::string& password);
 
+    ~HTTPCredentials();
+
 	void setUsername(const std::string& username);
 		/// Sets the username.
 
