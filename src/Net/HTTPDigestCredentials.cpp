@@ -57,6 +57,12 @@ std::string digest(DigestEngine& engine,
 }
 
 
+std::string formatNonceCounter(int counter)
+{
+    return NumberFormatter::formatHex(counter, 8);
+}
+
+
 }// namespace
 
 
@@ -221,12 +227,6 @@ int HTTPDigestCredentials::updateNonceCounter(const std::string& nonce)
     iter->second += 1;
 
     return iter->second;
-}
-
-
-std::string HTTPDigestCredentials::formatNonceCounter(int counter)
-{
-    return NumberFormatter::formatHex(counter, 8);
 }
 
 

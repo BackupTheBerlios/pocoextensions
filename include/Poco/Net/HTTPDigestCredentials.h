@@ -87,8 +87,6 @@ private:
 
     int updateNonceCounter(const std::string& nonce);
 
-    static std::string formatNonceCounter(int counter);
-
     typedef std::map<std::string, int> NonceCounterMap;
 
     std::string _username;
