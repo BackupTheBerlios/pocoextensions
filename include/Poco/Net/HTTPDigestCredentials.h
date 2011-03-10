@@ -71,7 +71,7 @@ public:
 
 private:
 	HTTPDigestCredentials(const HTTPDigestCredentials&);
-	HTTPDigestCredentials& operator = (const HTTPDigestCredentials);
+	HTTPDigestCredentials& operator = (const HTTPDigestCredentials&);
 
     void createAuthParams(const HTTPRequest& request,
                           const HTTPAuthenticationParams& responseAuthParams);

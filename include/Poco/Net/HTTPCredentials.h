@@ -49,7 +49,10 @@ public:
     void updateAuthInfo(HTTPRequest& request);
         /// TODO
 
-protected:
+private:
+    HTTPCredentials();
+    HTTPCredentials& operator = (const HTTPCredentials&);
+
     // HTTPBasicCredentials _basic;
     HTTPDigestCredentials _digest;
 };
