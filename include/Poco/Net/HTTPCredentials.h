@@ -24,14 +24,18 @@ class HTTPResponse;
 
 
 class HTTPCredentials
+    /// This is a utility class for working with HTTP
+    /// authentication (basic or digest) in HTTPRequest objects.
 {
 public:
     HTTPCredentials();
+        /// Creates an empty HTTPCredentials object.
 
-    explicit
     HTTPCredentials(const std::string& username, const std::string& password);
+        /// Creates an HTTPCredentials object with the given username and password.
 
     ~HTTPCredentials();
+        /// Destroys the HTTPCredentials.
 
 	void setUsername(const std::string& username);
 		/// Sets the username.
@@ -46,10 +50,16 @@ public:
 		/// Returns the password.
 
     void authenticate(HTTPRequest& request, const HTTPResponse& response);
-        /// TODO
+        /// Inspects authenticate header of the response, initializes
+        /// the internal state (in case of digest authentication) and
+        /// adds required information to the given HTTPRequest.
+        ///
+        /// Does nothing if there is no authentication header in the
+        /// HTTPResponse.
 
     void updateAuthInfo(HTTPRequest& request);
-        /// TODO
+        /// Updates internal state (in case of digest authentication) and
+        /// replaces authentication information in the request accordingly.
 
 private:
     HTTPCredentials(const HTTPCredentials&);
