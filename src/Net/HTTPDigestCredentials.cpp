@@ -63,14 +63,20 @@ std::string digest(DigestEngine& engine,
 const std::string HTTPDigestCredentials::SCHEME = "Digest";
 
 
-HTTPDigestCredentials::HTTPDigestCredentials()
+HTTPDigestCredentials::HTTPDigestCredentials():
+    _username(),
+    _password(),
+    _requestAuthParams(),
+    _nc()
 {
 }
 
 	
 HTTPDigestCredentials::HTTPDigestCredentials(const std::string& username, const std::string& password):
     _username(username),
-    _password(password)
+    _password(password),
+    _requestAuthParams(),
+    _nc()
 {
 }
 
