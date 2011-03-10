@@ -46,16 +46,22 @@ endif(CMAKE_COMPILER_IS_GNUCXX)
 #------------------------------------------------------------------------------
 # Find required packages
 
-find_path(POCO_INCLUDE_DIRS
+find_path(POCO_Foundation_INCLUDE_DIR
   NAMES Poco/Foundation.h
   PATHS /usr/include /usr/local/include
   )
-include_directories(${POCO_INCLUDE_DIRS})
+include_directories(${POCO_Foundation_INCLUDE_DIR})
 
 find_library(POCO_Foundation_LIBRARY
   NAMES PocoFoundation
   PATHS /usr/lib /usr/local/lib
   )
+
+find_path(POCO_Net_INCLUDE_DIR
+  NAMES Poco/Net/Net.h
+  PATHS /usr/include /usr/local/include
+  )
+include_directories(${POCO_Net_INCLUDE_DIR})
 
 find_library(POCO_Net_LIBRARY
   NAMES PocoNet
