@@ -16,7 +16,6 @@
 
 
 #include "Poco/Net/HTTPAuthenticationParams.h"
-#include "Poco/Net/Net.h"
 
 
 namespace Poco {
@@ -32,7 +31,7 @@ class HTTPRequest;
 class HTTPResponse;
 
 
-class Net_API HTTPDigestCredentials
+class HTTPDigestCredentials
 	/// This is a utility class for working with
 	/// HTTP Digest Authentication in HTTPRequest
 	/// objects.
