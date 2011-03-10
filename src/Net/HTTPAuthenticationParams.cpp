@@ -102,132 +102,25 @@ void HTTPAuthenticationParams::setRealm(const std::string& realm)
 
 std::string HTTPAuthenticationParams::toString() const
 {
-    ConstIterator it = begin();
+    ConstIterator iter = begin();
     std::string result;
 
-    if (it != end()) {
-        result += it->first;
-        result += '=';
-        result += it->second;   // TODO: Quoted.
-        ++it;
+    if (iter != end()) {
+        formatItem(result, iter);
+        ++iter;
     }
 
-    for (; it != end(); ++it) {
-        result += ',';
-        result += it->first;
-        result += '=';
-        result += it->second;   // TODO: Quoted.
+    for (; iter != end(); ++iter) {
+        result.append(", ");
+        formatItem(result, iter);
     }
 
     return result;
 }
 
 
-// void HTTPAuthenticationParams::splitQop(std::vector<std::string>& options) const
-// {
-//     options.clear();
-//     if (has("qop")) {
-//         const StringTokenizer tokens(get("qop"),
-//                                      ",",
-//                                      StringTokenizer::TOK_IGNORE_EMPTY |
-//                                      StringTokenizer::TOK_TRIM);
-// 
-//         options.assign(tokens.begin(), tokens.end());
-//     }
-// }
-
-
-void HTTPAuthenticationParams::parse(std::string::const_iterator begin,
-                                     std::string::const_iterator end)
+void HTTPAuthenticationParams::parse(std::string::const_iterator begin, std::string::const_iterator end)
 {
-    // enum State {
-    //     INITIAL,
-    //     PARAMETER_NAME,
-    //     ASSIGNMENT,
-    //     QUOTED_PARAMETER_VALUE,
-    //     PARAMETER_VALUE,
-    //     SEPARATOR
-    // };
-    // 
-    // int         s = INITIAL;
-    // std::string k;
-    // std::string v;
-    // 
-    // for (std::string::const_iterator it = begin; it != end; ++it) {
-    //     switch (state) {
-    //     case INITIAL :
-    //         if (std::isalnum(*it)) {
-    //             state = PARAMETER_NAME;
-    //             k += *it;
-    //         } else if (std::isspace(*it)) {
-    //             // skip
-    //         } else {
-    //             throw SyntaxException("Invalid authentication information", authInfo);
-    //         }
-    //         break;
-    // 
-    //     case PARAMETER_NAME :
-    //         if (*it == '=') {
-    //             state = ASSIGNMENT;
-    //         } else if (std::isalnum(*it)) {
-    //             k += *it;
-    //         } else {
-    //             throw SyntaxException("Invalid authentication information", authInfo);
-    //         }
-    //         break;
-    // 
-    //     case ASSIGNMENT :
-    //         if (*it == '"') {
-    //             state = QUOTED_PARAMETER_VALUE;
-    //         } else if (std::isalnum(*it)) {
-    //             state = PARAMETER_VALUE;
-    //             v += *it;
-    //         } else {
-    //             throw SyntaxException("Invalid authentication information", authInfo);
-    //         }
-    //         break;
-    // 
-    //     case QUOTED_PARAMETER_VALUE :
-    //         if (*it == '"') {
-    //             state = SEPARATOR;
-    //             add(k, v);
-    //             k.clear();
-    //             v.clear();
-    //         } else {
-    //             v += *it;
-    //         }
-    //         break;
-    // 
-    //     case PARAMETER_VALUE :
-    //         if (*it == ',') {
-    //             state = INITIAL;
-    //             add(k, v);
-    //             k.clear();
-    //             v.clear();
-    //         } else if (std::isspace(*it)) {
-    //             state = SEPARATOR;
-    //             add(k, v);
-    //             k.clear();
-    //             v.clear();
-    //         } else {
-    //             v += *it;
-    //         }
-    //         break;
-    // 
-    //     case SEPARATOR :
-    //         if (*it == ',') {
-    //             state = INITIAL;
-    //         } else if (std::isspace(*it)) {
-    //             // skip
-    //         }
-    //         break;
-    //     }
-    // }
-    // 
-    // if (state != SEPARATOR && state != PARAMETER_VALUE) {
-    //     throw SyntaxException("Invalid authentication information", authInfo);
-    // }
-
     enum State {
         STATE_INITIAL = 0x0100,
         STATE_FINAL = 0x0200,
@@ -328,6 +221,35 @@ void HTTPAuthenticationParams::parse(std::string::const_iterator begin,
     if (!(state & STATE_FINAL)) {
         throw SyntaxException("Invalid authentication information");
     }
+}
+
+
+void HTTPAuthenticationParams::formatItem(std::string& result, ConstIterator itemIter)
+{
+    result += itemIter->first;
+    result += '=';
+    if (mustBeQuoted(itemIter->first)) {
+        result += '"';
+        result += itemIter->second;
+        result += '"';
+    } else {
+        result += itemIter->second;
+    }
+}
+
+
+bool HTTPAuthenticationParams::mustBeQuoted(const std::string& param)
+{
+    return
+        icompare(param, "cnonce") == 0 ||
+        icompare(param, "domain") == 0 ||
+        icompare(param, "nonce") == 0 ||
+        icompare(param, "opaque") == 0 ||
+        icompare(param, "qop") == 0 ||
+        icompare(param, "realm") == 0 ||
+        icompare(param, "response") == 0 ||
+        icompare(param, "uri") == 0 ||
+        icompare(param, "username") == 0;
 }
 
 
