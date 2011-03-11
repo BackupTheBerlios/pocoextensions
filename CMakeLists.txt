@@ -12,10 +12,6 @@ set(PocoExtensions_PATCH_VERSION 0)
 set(PocoExtensions_VERSION
   "${PocoExtensions_MAJOR_VERSION}.${PocoExtensions_MINOR_VERSION}.${PocoExtensions_PATCH_VERSION}")
 
-if(WIN32)
-  set(CMAKE_DEBUG_POSTFIX d)
-endif(WIN32)
-
 #------------------------------------------------------------------------------
 # Compiler flags
 
@@ -92,6 +88,7 @@ add_library(PocoExtensions STATIC ${PocoExtensions_SOURCES})
 set_target_properties(PocoExtensions PROPERTIES SOVERSION ${PocoExtensions_VERSION})
 target_link_libraries(PocoExtensions ${POCO_Foundation_LIBRARY} ${POCO_Net_LIBRARY})
 if(WIN32)
+  set(CMAKE_DEBUG_POSTFIX d)
   set_target_properties(PocoExtensions PROPERTIES PREFIX "")
 endif(WIN32)
 
