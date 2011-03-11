@@ -16,6 +16,11 @@
 
 
 namespace Poco {
+
+
+class URI;
+
+
 namespace Net {
 
 
@@ -60,6 +65,22 @@ public:
     void updateAuthInfo(HTTPRequest& request);
         /// Updates internal state (in case of digest authentication) and
         /// replaces authentication information in the request accordingly.
+
+    static bool
+    isBasicCredentials(const std::string& header);
+        /// Returns true if authentication header is for Basic authentication.
+
+    static bool
+    isDigestCredentials(const std::string& header);
+        /// Returns true if authentication header is for Digest authentication.
+
+    static void
+    extractCredentials(const std::string& userInfo, std::string& username, std::string& password);
+        /// Extracts username and password from user:password information string.
+
+    static void
+    extractCredentials(const Poco::URI& uri, std::string& username, std::string& password);
+        /// Extracts username and password from the given URI.
 
 private:
     HTTPCredentials(const HTTPCredentials&);

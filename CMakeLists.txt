@@ -6,9 +6,9 @@ cmake_minimum_required(VERSION 2.6)
 
 project(PocoExtensions)
 
-set(PocoExtensions_MAJOR_VERSION 2)
-set(PocoExtensions_MINOR_VERSION 4)
-set(PocoExtensions_PATCH_VERSION 2)
+set(PocoExtensions_MAJOR_VERSION 3)
+set(PocoExtensions_MINOR_VERSION 0)
+set(PocoExtensions_PATCH_VERSION 0)
 set(PocoExtensions_VERSION
   "${PocoExtensions_MAJOR_VERSION}.${PocoExtensions_MINOR_VERSION}.${PocoExtensions_PATCH_VERSION}")
 
@@ -77,14 +77,12 @@ set(PocoExtensions_HEADERS
   include/Poco/Net/HTTPAuthenticationParams.h
   include/Poco/Net/HTTPCredentials.h
   include/Poco/Net/HTTPDigestCredentials.h
-  include/Poco/Net/Utility.h
   )
 
 set(PocoExtensions_SOURCES
   src/Net/HTTPAuthenticationParams.cpp
   src/Net/HTTPCredentials.cpp
   src/Net/HTTPDigestCredentials.cpp
-  src/Net/Utility.cpp
   )
 
 #------------------------------------------------------------------------------

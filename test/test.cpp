@@ -15,7 +15,6 @@
 #include <Poco/Net/HTTPCredentials.h>
 #include <Poco/Net/HTTPRequest.h>
 #include <Poco/Net/HTTPResponse.h>
-#include <Poco/Net/Utility.h>
 #include <Poco/StreamCopier.h>
 #include <Poco/URI.h>
 
@@ -65,7 +64,7 @@ main(int argc, char** argv)
         std::string username;
         std::string password;
 
-        Poco::Net::extractCredentials(url, username, password);
+        Poco::Net::HTTPCredentials::extractCredentials(url, username, password);
 
         Poco::Net::HTTPCredentials credentials(username, password);
 
