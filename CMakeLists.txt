@@ -8,7 +8,7 @@ project(PocoExtensions)
 
 set(PocoExtensions_MAJOR_VERSION 3)
 set(PocoExtensions_MINOR_VERSION 1)
-set(PocoExtensions_PATCH_VERSION 0)
+set(PocoExtensions_PATCH_VERSION 1)
 set(PocoExtensions_VERSION
   "${PocoExtensions_MAJOR_VERSION}.${PocoExtensions_MINOR_VERSION}.${PocoExtensions_PATCH_VERSION}")
 

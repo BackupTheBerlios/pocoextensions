@@ -197,6 +197,8 @@ void HTTPDigestCredentials::createAuthParams(const HTTPRequest& request,
 
 void HTTPDigestCredentials::updateAuthParams(const HTTPRequest& request)
 {
+    _requestAuthParams.set("uri", request.getURI());
+
     const std::string& qop = _requestAuthParams.get("qop", defaultQop);
 
     if (icompare(qop, "auth") == 0) {
