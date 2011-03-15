@@ -62,8 +62,8 @@ HTTPCredentials::authenticate(HTTPRequest& request, const HTTPResponse& response
 
 void HTTPCredentials::updateAuthInfo(HTTPRequest& request)
 {
-    if (request.has("Authorization")) {
-        const std::string& authorization = request.get("Authorization");
+    if (request.has(HTTPRequest::AUTHORIZATION)) {
+        const std::string& authorization = request.get(HTTPRequest::AUTHORIZATION);
 
         if (isBasicCredentials(authorization)) {
             HTTPBasicCredentials(_digest.getUsername(), _digest.getPassword()).authenticate(request);
