@@ -86,6 +86,18 @@ bool HTTPCredentials::isDigestCredentials(const std::string& header)
 }
 
 
+bool HTTPCredentials::hasBasicCredentials(const HTTPRequest& request)
+{
+    return request.has(HTTPRequest::AUTHORIZATION) && isBasicCredentials(request.get(HTTPRequest::AUTHORIZATION));
+}
+
+
+bool HTTPCredentials::hasDigestCredentials(const HTTPRequest& request)
+{
+    return request.has(HTTPRequest::AUTHORIZATION) && isDigestCredentials(request.get(HTTPRequest::AUTHORIZATION));
+}
+
+
 void HTTPCredentials::extractCredentials(const std::string& userInfo, std::string& username, std::string& password)
 {
     const size_t p = userInfo.find(':');

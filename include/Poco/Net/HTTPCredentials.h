@@ -74,6 +74,14 @@ public:
     isDigestCredentials(const std::string& header);
         /// Returns true if authentication header is for Digest authentication.
 
+    static bool
+    hasBasicCredentials(const HTTPRequest& request);
+        /// Returns true if Basic authentication header is present in the request.
+
+    static bool
+    hasDigestCredentials(const HTTPRequest& request);
+        /// Returns true if Digest authentication header is present in the request.
+
     static void
     extractCredentials(const std::string& userInfo, std::string& username, std::string& password);
         /// Extracts username and password from user:password information string.
