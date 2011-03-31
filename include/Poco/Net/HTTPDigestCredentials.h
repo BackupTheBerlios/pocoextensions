@@ -74,11 +74,11 @@ public:
     static std::string createNonce();
         /// Creates a random nonce string.
 
-	static const std::string SCHEME;
+    static const std::string SCHEME;
 
 private:
-	HTTPDigestCredentials(const HTTPDigestCredentials&);
-	HTTPDigestCredentials& operator = (const HTTPDigestCredentials&);
+    HTTPDigestCredentials(const HTTPDigestCredentials&);
+    HTTPDigestCredentials& operator = (const HTTPDigestCredentials&);
 
     void createAuthParams(const HTTPRequest& request,
                           const HTTPAuthenticationParams& responseAuthParams);
@@ -101,13 +101,13 @@ private:
 //
 inline const std::string& HTTPDigestCredentials::getUsername() const
 {
-	return _username;
+    return _username;
 }
 
 
 inline const std::string& HTTPDigestCredentials::getPassword() const
 {
-	return _password;
+    return _password;
 }
 
 

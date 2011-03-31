@@ -30,7 +30,7 @@ class HTTPAuthenticationParams : public NameValueCollection
 {
 public:
     HTTPAuthenticationParams();
-		/// Creates an empty authentication parameters collection.
+        /// Creates an empty authentication parameters collection.
 
     explicit HTTPAuthenticationParams(const std::string& authInfo);
         /// See fromAuthInfo() documentation.
@@ -42,17 +42,17 @@ public:
         /// See fromResponse() documentation.
 
     virtual ~HTTPAuthenticationParams();
-		/// Destroys the HTTPAuthenticationParams.
+        /// Destroys the HTTPAuthenticationParams.
 
     HTTPAuthenticationParams& operator = (const HTTPAuthenticationParams& authParams);
-		/// Assigns the content of another HTTPAuthenticationParams.
+        /// Assigns the content of another HTTPAuthenticationParams.
 
     void fromAuthInfo(const std::string& authInfo);
-		/// Creates an HTTPAuthenticationParams by parsing authentication
+        /// Creates an HTTPAuthenticationParams by parsing authentication
         /// information.
 
     void fromRequest(const HTTPRequest& request);
-		/// Extracts authentication information from the request and creates
+        /// Extracts authentication information from the request and creates
         /// HTTPAuthenticationParams by parsing it.
         ///
         /// Throws a NotAuthenticatedException if no authentication
@@ -61,7 +61,7 @@ public:
         /// unknown or invalid.
 
     void fromResponse(const HTTPResponse& response);
-		/// Extracts authentication information from the response and creates
+        /// Extracts authentication information from the response and creates
         /// HTTPAuthenticationParams by parsing it.
         ///
         /// Throws a NotAuthenticatedException if no authentication
@@ -70,7 +70,7 @@ public:
         /// unknown or invalid.
 
     void setRealm(const std::string& realm);
-		/// Sets the "realm" parameter to the provided string.
+        /// Sets the "realm" parameter to the provided string.
 
     const std::string& getRealm() const;
         /// Returns value of the "realm" parameter.

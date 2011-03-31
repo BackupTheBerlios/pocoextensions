@@ -94,9 +94,9 @@ HTTPAuthenticationParams::~HTTPAuthenticationParams()
 
 HTTPAuthenticationParams& HTTPAuthenticationParams::operator = (const HTTPAuthenticationParams& authParams)
 {
-	NameValueCollection::operator = (authParams);
+    NameValueCollection::operator = (authParams);
 
-	return *this;
+    return *this;
 }
 
 

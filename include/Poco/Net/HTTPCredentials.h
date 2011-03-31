@@ -42,17 +42,17 @@ public:
     ~HTTPCredentials();
         /// Destroys the HTTPCredentials.
 
-	void setUsername(const std::string& username);
-		/// Sets the username.
+    void setUsername(const std::string& username);
+        /// Sets the username.
 
-	const std::string& getUsername() const;
-		/// Returns the username.
+    const std::string& getUsername() const;
+        /// Returns the username.
 
-	void setPassword(const std::string& password);
-		/// Sets the password.
+    void setPassword(const std::string& password);
+        /// Sets the password.
 
-	const std::string& getPassword() const;
-		/// Returns the password.
+    const std::string& getPassword() const;
+        /// Returns the password.
 
     void authenticate(HTTPRequest& request, const HTTPResponse& response);
         /// Inspects authenticate header of the response, initializes
@@ -104,16 +104,16 @@ private:
 //
 inline void HTTPCredentials::setUsername(const std::string& username)
 {
-	_digest.setUsername(username);
+    _digest.setUsername(username);
 }
 
 
 inline const std::string& HTTPCredentials::getUsername() const
 {
-	return _digest.getUsername();
+    return _digest.getUsername();
 }
 
-	
+
 inline void HTTPCredentials::setPassword(const std::string& password)
 {
     _digest.setPassword(password);
@@ -122,7 +122,7 @@ inline void HTTPCredentials::setPassword(const std::string& password)
 
 inline const std::string& HTTPCredentials::getPassword() const
 {
-	return _digest.getPassword();
+    return _digest.getPassword();
 }
 
 
