@@ -64,7 +64,7 @@ main(int argc, char** argv)
         std::string username;
         std::string password;
 
-        Poco::Net::HTTPCredentials::extractCredentials(url, username, password);
+        Poco::Net::HTTPCredentials::extractFromURI(url, username, password);
 
         Poco::Net::HTTPCredentials credentials(username, password);
 

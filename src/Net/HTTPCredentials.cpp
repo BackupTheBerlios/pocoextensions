@@ -98,11 +98,14 @@ bool HTTPCredentials::hasDigestCredentials(const HTTPRequest& request)
 }
 
 
-void HTTPCredentials::extractCredentials(const std::string& userInfo, std::string& username, std::string& password)
+void HTTPCredentials::extractFromUserInfo(const std::string& userInfo, std::string& username, std::string& password)
 {
     const size_t p = userInfo.find(':');
 
     if (p != std::string::npos) {
+        if (userInfo.find(':', p + 1) != std::string::npos) {
+            throw SyntaxException("Invalid user info", userInfo);
+        }
         username.assign(userInfo, 0, p);
         password.assign(userInfo, p + 1, std::string::npos);
     } else {
@@ -112,10 +115,10 @@ void HTTPCredentials::extractCredentials(const std::string& userInfo, std::strin
 }
 
 
-void HTTPCredentials::extractCredentials(const Poco::URI& uri, std::string& username, std::string& password)
+void HTTPCredentials::extractFromURI(const Poco::URI& uri, std::string& username, std::string& password)
 {
     if (!uri.getUserInfo().empty()) {
-        extractCredentials(uri.getUserInfo(), username, password);
+        extractFromUserInfo(uri.getUserInfo(), username, password);
     }
 }
 

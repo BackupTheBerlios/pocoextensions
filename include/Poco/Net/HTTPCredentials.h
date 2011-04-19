@@ -83,11 +83,12 @@ public:
         /// Returns true if Digest authentication header is present in the request.
 
     static void
-    extractCredentials(const std::string& userInfo, std::string& username, std::string& password);
+    extractFromUserInfo(const std::string& userInfo, std::string& username, std::string& password);
         /// Extracts username and password from user:password information string.
+        /// Throws SyntaxException on invalid user information.
 
     static void
-    extractCredentials(const Poco::URI& uri, std::string& username, std::string& password);
+    extractFromURI(const URI& uri, std::string& username, std::string& password);
         /// Extracts username and password from the given URI.
 
 private:
