@@ -66,6 +66,16 @@ public:
         /// Updates internal state (in case of digest authentication) and
         /// replaces authentication information in the request accordingly.
 
+    void extractFromUserInfo(const std::string& userInfo);
+        /// Parses username:password string and sets username and password of
+        /// the credentials object.
+        /// Throws SyntaxException on invalid user information.
+
+    void extractFromURI(const URI& uri);
+        /// Extracts username and password from the given URI and sets username
+        /// and password of the credentials object.
+        /// Does nothing if URI has no user info part.
+
     static bool
     isBasicCredentials(const std::string& header);
         /// Returns true if authentication header is for Basic authentication.

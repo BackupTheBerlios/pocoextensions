@@ -61,12 +61,9 @@ main(int argc, char** argv)
     try {
         Poco::URI url(argv[1]);
 
-        std::string username;
-        std::string password;
+        Poco::Net::HTTPCredentials credentials;
 
-        Poco::Net::HTTPCredentials::extractFromURI(url, username, password);
-
-        Poco::Net::HTTPCredentials credentials(username, password);
+        credentials.extractFromURI(url);
 
         Poco::Net::HTTPClientSession session;
         Poco::Net::HTTPRequest       request;

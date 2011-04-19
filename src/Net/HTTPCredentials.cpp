@@ -74,6 +74,28 @@ void HTTPCredentials::updateAuthInfo(HTTPRequest& request)
 }
 
 
+void HTTPCredentials::extractFromUserInfo(const std::string& userInfo)
+{
+    std::string username;
+    std::string password;
+
+    extractFromUserInfo(userInfo, username, password);
+    setUsername(username);
+    setPassword(password);
+}
+
+
+void HTTPCredentials::extractFromURI(const URI& uri)
+{
+    std::string username;
+    std::string password;
+
+    extractFromURI(uri, username, password);
+    setUsername(username);
+    setPassword(password);
+}
+
+
 bool HTTPCredentials::isBasicCredentials(const std::string& header)
 {
     return icompare(header, 0, 6, "Basic ") == 0;
