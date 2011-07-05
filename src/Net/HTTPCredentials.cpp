@@ -98,13 +98,13 @@ void HTTPCredentials::extractFromURI(const URI& uri)
 
 bool HTTPCredentials::isBasicCredentials(const std::string& header)
 {
-    return icompare(header, 0, 6, "Basic ") == 0;
+    return icompare(header, 0, 5, "Basic") == 0;
 }
 
 
 bool HTTPCredentials::isDigestCredentials(const std::string& header)
 {
-    return icompare(header, 0, 7, "Digest ") == 0;
+    return icompare(header, 0, 6, "Digest") == 0;
 }
 
 
