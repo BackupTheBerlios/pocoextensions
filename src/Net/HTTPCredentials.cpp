@@ -75,25 +75,27 @@ void HTTPCredentials::updateAuthInfo(HTTPRequest& request)
 }
 
 
-void HTTPCredentials::extractFromUserInfo(const std::string& userInfo)
+void HTTPCredentials::fromUserInfo(const std::string& userInfo)
 {
     std::string username;
     std::string password;
 
-    extractFromUserInfo(userInfo, username, password);
+    extractCredentials(userInfo, username, password);
     setUsername(username);
     setPassword(password);
+    // TODO: Reset digest state?
 }
 
 
-void HTTPCredentials::extractFromURI(const URI& uri)
+void HTTPCredentials::fromURI(const URI& uri)
 {
     std::string username;
     std::string password;
 
-    extractFromURI(uri, username, password);
+    extractCredentials(uri, username, password);
     setUsername(username);
     setPassword(password);
+    // TODO: Reset digest state?
 }
 
 
@@ -121,7 +123,7 @@ bool HTTPCredentials::hasDigestCredentials(const HTTPRequest& request)
 }
 
 
-void HTTPCredentials::extractFromUserInfo(const std::string& userInfo, std::string& username, std::string& password)
+void HTTPCredentials::extractCredentials(const std::string& userInfo, std::string& username, std::string& password)
 {
     const size_t p = userInfo.find(':');
 
@@ -138,10 +140,10 @@ void HTTPCredentials::extractFromUserInfo(const std::string& userInfo, std::stri
 }
 
 
-void HTTPCredentials::extractFromURI(const Poco::URI& uri, std::string& username, std::string& password)
+void HTTPCredentials::extractCredentials(const Poco::URI& uri, std::string& username, std::string& password)
 {
     if (!uri.getUserInfo().empty()) {
-        extractFromUserInfo(uri.getUserInfo(), username, password);
+        extractCredentials(uri.getUserInfo(), username, password);
     }
 }
 

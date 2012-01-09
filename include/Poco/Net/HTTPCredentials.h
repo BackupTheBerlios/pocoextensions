@@ -66,12 +66,12 @@ public:
         /// Updates internal state (in case of digest authentication) and
         /// replaces authentication information in the request accordingly.
 
-    void extractFromUserInfo(const std::string& userInfo);
+    void fromUserInfo(const std::string& userInfo);
         /// Parses username:password string and sets username and password of
         /// the credentials object.
         /// Throws SyntaxException on invalid user information.
 
-    void extractFromURI(const URI& uri);
+    void fromURI(const URI& uri);
         /// Extracts username and password from the given URI and sets username
         /// and password of the credentials object.
         /// Does nothing if URI has no user info part.
@@ -93,12 +93,12 @@ public:
         /// Returns true if Digest authentication header is present in the request.
 
     static void
-    extractFromUserInfo(const std::string& userInfo, std::string& username, std::string& password);
+    extractCredentials(const std::string& userInfo, std::string& username, std::string& password);
         /// Extracts username and password from user:password information string.
         /// Throws SyntaxException on invalid user information.
 
     static void
-    extractFromURI(const URI& uri, std::string& username, std::string& password);
+    extractCredentials(const URI& uri, std::string& username, std::string& password);
         /// Extracts username and password from the given URI.
 
 private:
