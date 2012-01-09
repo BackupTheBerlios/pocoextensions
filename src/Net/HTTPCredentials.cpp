@@ -101,13 +101,13 @@ void HTTPCredentials::fromURI(const URI& uri)
 
 bool HTTPCredentials::isBasicCredentials(const std::string& header)
 {
-    return icompare(header, 0, 5, "Basic") == 0 && (header.size() > 5 && std::isspace(header[5]));
+    return icompare(header, 0, 5, "Basic") == 0 && (header.size() > 5 ? std::isspace(header[5]) : true);
 }
 
 
 bool HTTPCredentials::isDigestCredentials(const std::string& header)
 {
-    return icompare(header, 0, 6, "Digest") == 0 && (header.size() > 6 && std::isspace(header[6]));
+    return icompare(header, 0, 6, "Digest") == 0 && (header.size() > 6 ? std::isspace(header[6]) : true);
 }
 
 
